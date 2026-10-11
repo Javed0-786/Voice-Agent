@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura Wellness Clinic | Autonomous Voice Concierge</title>
+    <meta name="description" content="Autonomous real-time voice customer service and appointment booking agent powered by Google Gemini Live and LiveKit WebRTC.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <!-- LiveKit Client SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
+</head>
+<body>
+    <div class="app-background">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+        <div class="glow-orb orb-3"></div>
+    </div>
+
+    <header class="app-header">
+        <div class="brand">
+            <div class="brand-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+            </div>
+            <div>
+                <h1>Aura Wellness Clinic</h1>
+                <span class="sub-brand">Autonomous AI Voice Concierge</span>
+            </div>
+        </div>
+        <div class="header-badges">
+            <div class="badge-pill live-badge">
+                <span class="indicator-dot pulse"></span>
+                <span>Gemini Multimodal Live</span>
+            </div>
+            <div class="badge-pill server-badge">
+                <span class="indicator-dot active"></span>
+                <span>LiveKit WebRTC</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <!-- Voice Call Panel -->
+        <section class="glass-panel call-hero-panel">
+            <div class="call-stage">
+                <div class="avatar-container" id="avatarContainer">
+                    <div class="wave wave-1"></div>
+                    <div class="wave wave-2"></div>
+                    <div class="wave wave-3"></div>
+                    <div class="orb-core" id="orbCore">
+                        <div class="orb-inner">
+                            <svg class="mic-icon" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                                <line x1="12" y1="19" x2="12" y2="23"/>
+                                <line x1="8" y1="23" x2="16" y2="23"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="call-status-wrapper">
+                    <h2 class="status-heading" id="statusHeading">Ready to Connect</h2>
+                    <p class="status-description" id="statusDesc">Click below to start a live two-way voice call with Aura, your clinic assistant.</p>
+                    <div class="call-timer" id="callTimer" style="display: none;">00:00</div>
+                </div>
+
+                <!-- Call Controls -->
+                <div class="controls-toolbar">
+                    <button class="primary-call-btn" id="callBtn">
+                        <svg class="phone-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                        </svg>
+                        <span id="callBtnText">Start Voice Call</span>
+                    </button>
+                    <button class="secondary-btn" id="muteBtn" disabled>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="1" y1="1" x2="23" y2="23"/>
+                            <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"/>
+                            <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"/>
+                            <line x1="12" y1="19" x2="12" y2="23"/>
+                            <line x1="8" y1="23" x2="16" y2="23"/>
+                        </svg>
+                        <span id="muteBtnText">Mute</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Side: Live Autonomous Activity & Prompt Cards -->
+        <section class="glass-panel activity-panel">
+            <div class="panel-header">
+                <h3>Live Agent Actions & Data Channel</h3>
+                <span class="live-pill">Live Feed</span>
+            </div>
+            <div class="activity-feed" id="activityFeed">
+                <div class="empty-feed" id="emptyFeed">
+                    <p>Agent actions (service lookups, availability queries, bookings, cancellations) will display here in real-time as you speak.</p>
+                </div>
+            </div>
+
+            <!-- Suggested Phrases -->
+            <div class="suggestions-container">
+                <span class="suggestions-title">💡 What you can say:</span>
+                <div class="prompt-chips">
+                    <button class="chip">"What services and pricing do you offer?"</button>
+                    <button class="chip">"Check available slots for tomorrow"</button>
+                    <button class="chip">"Look up my appointment BK-1001"</button>
+                    <button class="chip">"Book a Deep Tissue Massage for tomorrow at 2 PM"</button>
+                    <button class="chip">"Cancel my booking BK-1002"</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Database Dashboard Section -->
+    <section class="bottom-section">
+        <div class="glass-panel bookings-panel">
+            <div class="panel-header">
+                <div class="table-title-group">
+                    <h3>Clinic Bookings Ledger (Live SQLite Database)</h3>
+                    <span class="badge-count" id="bookingCount">2 Bookings</span>
+                </div>
+                <button class="refresh-btn" id="refreshBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="23 4 23 10 17 10"/>
+                        <polyline points="1 20 1 14 7 14"/>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                    </svg>
+                    <span>Refresh</span>
+                </button>
+            </div>
+            <div class="table-responsive">
+                <table class="bookings-table">
+                    <thead>
+                        <tr>
+                            <th>Booking Ref</th>
+                            <th>Customer Name</th>
+                            <th>Contact</th>
+                            <th>Treatment</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookingsTableBody">
+                        <tr>
+                            <td colspan="7" class="loading-td">Loading clinic records...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hidden audio element for LiveKit WebRTC audio output -->
+    <audio id="remoteAudio" autoplay playsinline></audio>
+
+    <script src="app.js"></script>
+</body>
+</html>
